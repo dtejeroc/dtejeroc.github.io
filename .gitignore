@@ -1,0 +1,16 @@
+# Resultados y archivos temporales de Ansys Electronics Desktop (revisa los nombres en tu versión)
+*.aedtresults/
+*.aedt.lock
+*.aedt.auto
+*.aedt.q
+*.aedt.q.complete
+*.lock
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Sistema
+.DS_Store
+Thumbs.db

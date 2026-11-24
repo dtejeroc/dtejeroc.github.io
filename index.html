@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daniel Tejero Cotrina · Antenas y simulación electromagnética</title>
+<meta name="description" content="Portfolio de diseño de antenas y simulación electromagnética con Ansys HFSS: modelos, resultados y cómo reproducirlos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F5F8; --surface:#FFFFFF; --ink:#12202C; --muted:#4D5F6E; --line:#C8D2DB;
+  --accent:#0A6C96; --accent-soft:rgba(10,108,150,.14); --beam:#B87400;
+  --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101920; --surface:#16222B; --ink:#E6EDF2; --muted:#9FB0BD; --line:#2B3B47;
+    --accent:#4FB4DD; --accent-soft:rgba(79,180,221,.18); --beam:#E8A933;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:3px}
+a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.25rem}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap;padding:1.25rem 0;border-bottom:1px solid var(--line)}
+header.top strong{font-weight:600;letter-spacing:.01em}
+header.top nav{display:flex;gap:1.25rem}
+header.top nav a{color:var(--muted);text-decoration:none}
+header.top nav a:hover{color:var(--ink);text-decoration:underline}
+
+.hero{display:grid;gap:2.5rem;padding:3.5rem 0 3rem;align-items:center}
+@media (min-width:56rem){.hero{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)}}
+.hero h1{font-size:clamp(2.1rem,5.2vw,3.4rem);line-height:1.05;font-weight:700;letter-spacing:-.02em;margin:0 0 1rem}
+.hero .role{font-size:1.15rem;font-weight:500;color:var(--accent);margin:0 0 1rem}
+.hero p.lead{max-width:34rem;color:var(--muted);margin:0 0 1.5rem}
+.links{display:flex;gap:.75rem;flex-wrap:wrap}
+.btn{display:inline-block;padding:.6rem 1.1rem;border:1px solid var(--ink);color:var(--ink);text-decoration:none;font-weight:500;border-radius:4px}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+
+figure.lab{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1rem 1rem 1.25rem}
+figure.lab svg{display:block;width:100%;height:auto}
+.ring{fill:none;stroke:var(--line);stroke-width:1}
+.axis{stroke:var(--line);stroke-width:1}
+.tick{fill:var(--muted);font-size:10px;font-family:var(--font)}
+#pattern{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2;stroke-linejoin:round}
+#steer{stroke:var(--beam);stroke-width:2;stroke-dasharray:5 4}
+.controls{display:grid;gap:.75rem;margin-top:.75rem}
+.ctl{display:grid;grid-template-columns:8.5rem 1fr 3.8rem;gap:.75rem;align-items:center;font-size:.92rem}
+.ctl output{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.stats{display:flex;gap:1.5rem;flex-wrap:wrap;margin:1rem 0 .5rem;padding-top:.9rem;border-top:1px solid var(--line);font-size:.92rem}
+.stats div{min-width:7rem}
+.stats dt{color:var(--muted);font-size:.85rem}
+.stats dd{margin:0;font-weight:600;font-size:1.05rem;font-variant-numeric:tabular-nums}
+#grating{color:var(--beam)}
+figcaption{color:var(--muted);font-size:.85rem;margin-top:.5rem}
+
+section{padding:2.5rem 0;border-top:1px solid var(--line)}
+section h2{font-size:1.5rem;margin:0 0 1.25rem;letter-spacing:-.01em}
+.row{display:grid;gap:.25rem 2rem;padding:1.1rem 0;border-bottom:1px solid var(--line)}
+@media (min-width:48rem){.row{grid-template-columns:15rem minmax(0,1fr)}}
+.row:last-child{border-bottom:0}
+.row h3{margin:0;font-size:1.05rem;font-weight:600}
+.row .state{color:var(--muted);font-size:.9rem}
+.row p{margin:0;max-width:40rem}
+.tags{margin-top:.4rem;color:var(--muted);font-size:.9rem}
+footer{padding:2rem 0 3rem;border-top:1px solid var(--line);color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <strong>Daniel Tejero Cotrina</strong>
+    <nav aria-label="Principal">
+      <a href="#proyectos">Proyectos</a>
+      <a href="#perfil">Perfil</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>Antenas que se simulan, se miden y se pueden reproducir.</h1>
+        <p class="role">Ingeniero de antenas y simulación electromagnética</p>
+        <p class="lead">Diseño y simulo antenas con Ansys HFSS y las valido con medidas en cámara anecoica. En esta página documento cada proyecto con su modelo, sus resultados y los pasos para repetirlo.</p>
+        <div class="links">
+          <a class="btn primary" href="#proyectos">Ver proyectos</a>
+          <!-- TODO: cambia tu-usuario por tu usuario de GitHub -->
+          <a class="btn" href="https://github.com/tu-usuario">GitHub</a>
+        </div>
+      </div>
+
+      <figure class="lab" aria-labelledby="lab-title">
+        <svg viewBox="0 0 400 236" role="img" aria-label="Diagrama polar del factor de array en dB, entre menos 90 y más 90 grados">
+          <g id="grid"></g>
+          <line id="steer" x1="200" y1="214" x2="200" y2="34"/>
+          <path id="pattern" d=""/>
+        </svg>
+        <div class="controls">
+          <label class="ctl" for="n">Elementos <input id="n" type="range" min="2" max="16" step="1" value="8"><output id="nOut">8</output></label>
+          <label class="ctl" for="d">Separación <input id="d" type="range" min="0.3" max="1" step="0.05" value="0.5"><output id="dOut">0,50 λ</output></label>
+          <label class="ctl" for="t">Apuntamiento <input id="t" type="range" min="-60" max="60" step="1" value="20"><output id="tOut">20°</output></label>
+        </div>
+        <dl class="stats" aria-live="polite">
+          <div><dt>Haz a −3 dB</dt><dd id="bw">–</dd></div>
+          <div><dt>Lóbulo secundario</dt><dd id="sll">–</dd></div>
+          <div><dt>Lóbulos de rejilla</dt><dd id="grating">–</dd></div>
+        </dl>
+        <figcaption id="lab-title">Factor de array de un array lineal de elementos isótropos. Sube la separación o el apuntamiento y verás aparecer lóbulos de rejilla. El diagrama real, con el elemento de parche, saldrá del proyecto en HFSS.</figcaption>
+      </figure>
+    </div>
+
+    <section id="proyectos" aria-labelledby="h-proy">
+      <h2 id="h-proy">Proyectos</h2>
+
+      <div class="row">
+        <div>
+          <h3>Array de parches en HFSS</h3>
+          <span class="state">En curso</span>
+        </div>
+        <div>
+          <p>Diseño de un array de parches en Ansys HFSS: del elemento aislado al array, con apuntamiento del haz y acoplamiento mutuo.</p>
+          <p class="tags">Ansys HFSS · Arrays · S11 · Diagrama de radiación</p>
+          <!-- TODO: cambia tu-usuario por tu usuario de GitHub -->
+          <p><a href="https://github.com/tu-usuario/array-parches-hfss">Ver repositorio</a></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <h3>Automatización con PyAEDT</h3>
+          <span class="state">Próximo</span>
+        </div>
+        <div>
+          <p>El mismo array generado y optimizado con un script de Python: modelo, barrido paramétrico y extracción de resultados.</p>
+          <p class="tags">Python · PyAEDT · Optimización</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <h3>Antena de parche no lineal</h3>
+          <span class="state">Próximo</span>
+        </div>
+        <div>
+          <p>Cosimulación electromagnética y de circuito de una antena con elemento no lineal, con análisis de intermodulación.</p>
+          <p class="tags">HFSS · Keysight ADS · Balance armónico</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="perfil" aria-labelledby="h-perfil">
+      <h2 id="h-perfil">Perfil</h2>
+      <div class="row">
+        <div><h3>Simulación</h3></div>
+        <div><p>Ansys HFSS, Keysight ADS, MATLAB, LTspice.</p></div>
+      </div>
+      <div class="row">
+        <div><h3>Medida</h3></div>
+        <div><p>Analizador vectorial de redes, analizador de espectro y cámara anecoica para antenas de 12 a 95 GHz, que desplegué y puse en marcha en el laboratorio mmiRF de la Universidad de Málaga.</p></div>
+      </div>
+      <div class="row">
+        <div><h3>Diseño y fabricación</h3></div>
+        <div><p>Circuitos RF y de microondas, PCB con Altium Designer y KiCad, y adaptación de diseños a fabricación en serie (DFM y DFT) en el sector radar de defensa.</p></div>
+      </div>
+      <div class="row">
+        <div><h3>Programación</h3></div>
+        <div><p>Python, MATLAB, C y Linux.</p></div>
+      </div>
+    </section>
+
+    <section id="contacto" aria-labelledby="h-cont">
+      <h2 id="h-cont">Contacto</h2>
+      <!-- TODO: sustituye estos enlaces por los tuyos -->
+      <p><a href="mailto:tu-correo@ejemplo.com">tu-correo@ejemplo.com</a> · <a href="https://www.linkedin.com/in/tu-perfil">LinkedIn</a> · <a href="https://github.com/tu-usuario">GitHub</a></p>
+    </section>
+  </main>
+
+  <footer>Los proyectos de esta página son personales y no contienen información de ningún empleador.</footer>
+</div>
+
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg", CX=200, CY=214, R=180, FLOOR=-40, STEP=0.25;
+  var grid=document.getElementById("grid"), pattern=document.getElementById("pattern"), steer=document.getElementById("steer");
+  var el=function(id){return document.getElementById(id)};
+  var rad=function(g){return g*Math.PI/180};
+
+  function make(tag,attrs){var e=document.createElementNS(NS,tag);for(var k in attrs){e.setAttribute(k,attrs[k])}return e}
+  function pt(deg,r){return [CX+r*Math.sin(rad(deg)), CY-r*Math.cos(rad(deg))]}
+
+  // Rejilla polar: anillos en dB y radios cada 30°
+  [0,-10,-20,-30].forEach(function(db){
+    var r=(db-FLOOR)/(-FLOOR)*R, a=pt(-90,r), b=pt(90,r);
+    grid.appendChild(make("path",{"class":"ring",d:"M"+a[0]+" "+a[1]+" A"+r+" "+r+" 0 0 1 "+b[0]+" "+b[1]}));
+    var t=make("text",{"class":"tick",x:CX+4,y:CY-r+11});t.textContent=db+" dB";grid.appendChild(t);
+  });
+  [-90,-60,-30,0,30,60,90].forEach(function(a){
+    var p=pt(a,R);
+    grid.appendChild(make("line",{"class":"axis",x1:CX,y1:CY,x2:p[0],y2:p[1]}));
+    var q=pt(a,R+13), t=make("text",{"class":"tick","text-anchor":"middle",x:q[0],y:q[1]+3});
+    t.textContent=a+"°";grid.appendChild(t);
+  });
+
+  function af(theta,n,d,t0){
+    var psi=2*Math.PI*d*(Math.sin(rad(theta))-Math.sin(rad(t0))), s=Math.sin(psi/2);
+    if(Math.abs(s)<1e-9) return 1;
+    return Math.abs(Math.sin(n*psi/2)/(n*s));
+  }
+
+  function update(){
+    var n=+el("n").value, d=+el("d").value, t0=+el("t").value;
+    el("nOut").textContent=n;
+    el("dOut").textContent=d.toFixed(2).replace(".",",")+" λ";
+    el("tOut").textContent=t0+"°";
+
+    var thetas=[], db=[], i, th, a, v;
+    for(th=-90;th<=90+1e-9;th+=STEP){
+      a=af(th,n,d,t0); v=Math.max(20*Math.log10(Math.max(a,1e-6)),FLOOR);
+      thetas.push(th); db.push(v);
+    }
+
+    // Trazado
+    var path="", p;
+    for(i=0;i<thetas.length;i++){
+      p=pt(thetas[i],(db[i]-FLOOR)/(-FLOOR)*R);
+      path+=(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1);
+    }
+    pattern.setAttribute("d",path+"L"+CX+" "+CY+"Z");
+    var s=pt(t0,R); steer.setAttribute("x2",s[0]); steer.setAttribute("y2",s[1]);
+
+    // Pico del haz principal
+    var pk=Math.round((t0+90)/STEP); // el pico principal está siempre en la dirección de apuntamiento
+    // Ancho a −3 dB alrededor del pico
+    var lo=pk, hi=pk;
+    while(lo>0 && db[lo]>-3) lo--;
+    while(hi<db.length-1 && db[hi]>-3) hi++;
+    var bw=thetas[hi]-thetas[lo];
+    el("bw").textContent=(lo===0||hi===db.length-1)?"> "+bw.toFixed(0)+"°":bw.toFixed(1).replace(".",",")+"°";
+
+    // Límites del haz principal: primer mínimo a cada lado del pico
+    var l=pk; while(l>0 && db[l-1]<=db[l]) l--;
+    var r=pk; while(r<db.length-1 && db[r+1]<=db[r]) r++;
+    // Máximo local fuera del haz principal
+    var best=-Infinity;
+    for(i=1;i<db.length-1;i++){
+      if((i<l||i>r) && db[i]>db[i-1] && db[i]>=db[i+1] && db[i]>best) best=db[i];
+    }
+    // Máximos en los bordes (±90°) cuentan si están en subida
+    if((0<l) && db[0]>db[1] && db[0]>best) best=db[0];
+    var end=db.length-1;
+    if((end>r) && db[end]>db[end-1] && db[end]>best) best=db[end];
+
+    var grat=best>-1;
+    var sv=Math.abs(best)<0.05?0:best;
+    el("sll").textContent=(best===-Infinity||best<=FLOOR)?"< −40 dB":sv.toFixed(1).replace(".",",").replace("-","−")+" dB";
+    el("grating").textContent=grat?"Sí":"No";
+  }
+
+  ["n","d","t"].forEach(function(id){el(id).addEventListener("input",update)});
+  update();
+})();
+</script>
+</body>
+</html>
